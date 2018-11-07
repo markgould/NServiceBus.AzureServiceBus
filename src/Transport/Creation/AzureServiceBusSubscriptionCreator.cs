@@ -154,15 +154,17 @@
                 logger.Warn("RequiresSession cannot be update on the existing queue!");
             }
 
-            return existingDescription.AutoDeleteOnIdle != newDescription.AutoDeleteOnIdle
+            var equal = existingDescription.AutoDeleteOnIdle != newDescription.AutoDeleteOnIdle
                    || existingDescription.LockDuration != newDescription.LockDuration
                    || existingDescription.DefaultMessageTimeToLive != newDescription.DefaultMessageTimeToLive
                    || existingDescription.EnableDeadLetteringOnMessageExpiration != newDescription.EnableDeadLetteringOnMessageExpiration
                    || existingDescription.EnableDeadLetteringOnFilterEvaluationExceptions != newDescription.EnableDeadLetteringOnFilterEvaluationExceptions
                    || existingDescription.MaxDeliveryCount != newDescription.MaxDeliveryCount
                    || existingDescription.EnableBatchedOperations != newDescription.EnableBatchedOperations
-                   || existingDescription.ForwardTo != newDescription.ForwardTo
+                   || existingDescription.ForwardTo.Contains(newDescription.ForwardTo)
                    || existingDescription.ForwardDeadLetteredMessagesTo != newDescription.ForwardDeadLetteredMessagesTo;
+
+            return equal;
         }
 
         static string GenerateSubscriptionKey(Uri namespaceAddress, string topicPath, string subscriptionName)
