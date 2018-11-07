@@ -210,8 +210,21 @@
                    || existingDescription.EnableDeadLetteringOnFilterEvaluationExceptions != newDescription.EnableDeadLetteringOnFilterEvaluationExceptions
                    || existingDescription.MaxDeliveryCount != newDescription.MaxDeliveryCount
                    || existingDescription.EnableBatchedOperations != newDescription.EnableBatchedOperations
-                   || existingDescription.ForwardTo != newDescription.ForwardTo
+                   || ForwardNotSame(existingDescription, newDescription)
                    || existingDescription.ForwardDeadLetteredMessagesTo != newDescription.ForwardDeadLetteredMessagesTo;
+        }
+
+        bool ForwardNotSame(SubscriptionDescription existingDescription, SubscriptionDescription newDescription)
+        {
+            var result = existingDescription.ForwardTo != newDescription.ForwardTo;
+            if (result)
+            {
+                if (existingDescription.ForwardTo != null)
+                {
+                    result = !existingDescription.ForwardTo.EndsWith("/" + newDescription.ForwardTo);
+                }
+            }
+            return result;
         }
 
         static string GenerateSubscriptionKey(Uri namespaceAddress, string topicPath, string subscriptionName)
